@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useFormStatus } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 import React, { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,8 +23,9 @@ function SubmitButton() {
 }
 
 export function UpdateStatusForm({ shipment }: { shipment: Shipment }) {
-    const initialState = { message: null, errors: {} };
-    const [state, dispatch] = React.useActionState(updateShipmentStatus, initialState);
+    const initialState = { message: '', errors: {} as Record<string, string[]> };
+    // @ts-ignore - useFormState type inference issue with union return types
+    const [state, dispatch] = useFormState(updateShipmentStatus, initialState);
     const { toast } = useToast();
     const formRef = useRef<HTMLFormElement>(null);
 

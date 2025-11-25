@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useActionState, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useFormState } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { createShipment } from '@/lib/actions';
 import { CalendarIcon, Loader2, PlusCircle, Trash2 } from 'lucide-react';
+import { useFormStatus } from 'react-dom';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
@@ -15,7 +17,7 @@ import { format } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 function SubmitButton() {
-    const { pending } = useActionState(createShipment, { message: null, errors: {}, success: false });
+    const { pending } = useFormStatus();
     return (
         <Button type="submit" disabled={pending} size="lg" className="w-full mt-6">
             {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -25,8 +27,9 @@ function SubmitButton() {
 }
 
 export function ShipmentForm() {
-    const initialState = { message: null, errors: {}, success: false, shipmentId: null };
-    const [state, dispatch] = useActionState(createShipment, initialState);
+    const initialState = { message: '', errors: {} as Record<string, string[]> };
+    // @ts-ignore - useFormState type inference issue with union return types
+    const [state, dispatch] = useFormState(createShipment, initialState);
     const { toast } = useToast();
     const router = useRouter();
     const [date, setDate] = useState<Date>();
@@ -74,29 +77,29 @@ export function ShipmentForm() {
                         <div className="space-y-2">
                             <Label htmlFor="shipperFirstName">First Name</Label>
                             <Input id="shipperFirstName" name="shipperFirstName" placeholder="John" />
-                            {state.errors?.['shipper.firstName'] && <p className="text-sm font-medium text-destructive">{state.errors['shipper.firstName'][0]}</p>}
+                            {(state.errors as any)?.['shipper.firstName'] && <p className="text-sm font-medium text-destructive">{(state.errors as any)['shipper.firstName'][0]}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="shipperLastName">Last Name</Label>
                             <Input id="shipperLastName" name="shipperLastName" placeholder="Doe" />
-                             {state.errors?.['shipper.lastName'] && <p className="text-sm font-medium text-destructive">{state.errors['shipper.lastName'][0]}</p>}
+                             {(state.errors as any)?.['shipper.lastName'] && <p className="text-sm font-medium text-destructive">{(state.errors as any)['shipper.lastName'][0]}</p>}
                         </div>
                     </div>
                      <div className="space-y-2">
                         <Label htmlFor="shipperAddress">Address</Label>
                         <Input id="shipperAddress" name="shipperAddress" placeholder="123 Main St, New York, NY 10001" />
-                        {state.errors?.['shipper.address'] && <p className="text-sm font-medium text-destructive">{state.errors['shipper.address'][0]}</p>}
+                        {(state.errors as any)?.['shipper.address'] && <p className="text-sm font-medium text-destructive">{(state.errors as any)['shipper.address'][0]}</p>}
                     </div>
                     <div className="grid md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="shipperPhone">Phone Number</Label>
                             <Input id="shipperPhone" name="shipperPhone" placeholder="+1 212-555-0123" />
-                            {state.errors?.['shipper.phone'] && <p className="text-sm font-medium text-destructive">{state.errors['shipper.phone'][0]}</p>}
+                            {(state.errors as any)?.['shipper.phone'] && <p className="text-sm font-medium text-destructive">{(state.errors as any)['shipper.phone'][0]}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="shipperEmail">Email Address (Optional)</Label>
                             <Input id="shipperEmail" name="shipperEmail" type="email" placeholder="shipper@example.com" />
-                            {state.errors?.['shipper.email'] && <p className="text-sm font-medium text-destructive">{state.errors['shipper.email'][0]}</p>}
+                            {(state.errors as any)?.['shipper.email'] && <p className="text-sm font-medium text-destructive">{(state.errors as any)['shipper.email'][0]}</p>}
                         </div>
                     </div>
                 </CardContent>
@@ -112,29 +115,29 @@ export function ShipmentForm() {
                         <div className="space-y-2">
                             <Label htmlFor="receiverFirstName">First Name</Label>
                             <Input id="receiverFirstName" name="receiverFirstName" placeholder="Jane" />
-                            {state.errors?.['receiver.firstName'] && <p className="text-sm font-medium text-destructive">{state.errors['receiver.firstName'][0]}</p>}
+                            {(state.errors as any)?.['receiver.firstName'] && <p className="text-sm font-medium text-destructive">{(state.errors as any)['receiver.firstName'][0]}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="receiverLastName">Last Name</Label>
                             <Input id="receiverLastName" name="receiverLastName" placeholder="Smith" />
-                            {state.errors?.['receiver.lastName'] && <p className="text-sm font-medium text-destructive">{state.errors['receiver.lastName'][0]}</p>}
+                            {(state.errors as any)?.['receiver.lastName'] && <p className="text-sm font-medium text-destructive">{(state.errors as any)['receiver.lastName'][0]}</p>}
                         </div>
                     </div>
                      <div className="space-y-2">
                         <Label htmlFor="receiverAddress">Address</Label>
                         <Input id="receiverAddress" name="receiverAddress" placeholder="456 Park Ave, London, W1K 1BE" />
-                        {state.errors?.['receiver.address'] && <p className="text-sm font-medium text-destructive">{state.errors['receiver.address'][0]}</p>}
+                        {(state.errors as any)?.['receiver.address'] && <p className="text-sm font-medium text-destructive">{(state.errors as any)['receiver.address'][0]}</p>}
                     </div>
                     <div className="grid md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="receiverPhone">Phone Number</Label>
                             <Input id="receiverPhone" name="receiverPhone" placeholder="+44 20 7946 0958" />
-                            {state.errors?.['receiver.phone'] && <p className="text-sm font-medium text-destructive">{state.errors['receiver.phone'][0]}</p>}
+                            {(state.errors as any)?.['receiver.phone'] && <p className="text-sm font-medium text-destructive">{(state.errors as any)['receiver.phone'][0]}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="receiverEmail">Email Address (Optional)</Label>
                             <Input id="receiverEmail" name="receiverEmail" type="email" placeholder="receiver@example.com" />
-                            {state.errors?.['receiver.email'] && <p className="text-sm font-medium text-destructive">{state.errors['receiver.email'][0]}</p>}
+                            {(state.errors as any)?.['receiver.email'] && <p className="text-sm font-medium text-destructive">{(state.errors as any)['receiver.email'][0]}</p>}
                         </div>
                     </div>
                 </CardContent>
@@ -149,12 +152,12 @@ export function ShipmentForm() {
                         <div className="space-y-2">
                             <Label htmlFor="invoiceNumber">Invoice Number</Label>
                             <Input id="invoiceNumber" name="invoiceNumber" placeholder="INV-2024-123" />
-                            {state.errors?.invoiceNumber && <p className="text-sm font-medium text-destructive">{state.errors.invoiceNumber[0]}</p>}
+                            {(state.errors as any)?.invoiceNumber && <p className="text-sm font-medium text-destructive">{(state.errors as any).invoiceNumber[0]}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="batchNumber">Batch Number</Label>
                             <Input id="batchNumber" name="batchNumber" placeholder="BATCH-007" />
-                            {state.errors?.batchNumber && <p className="text-sm font-medium text-destructive">{state.errors.batchNumber[0]}</p>}
+                            {(state.errors as any)?.batchNumber && <p className="text-sm font-medium text-destructive">{(state.errors as any).batchNumber[0]}</p>}
                         </div>
                     </div>
                     
@@ -189,14 +192,14 @@ export function ShipmentForm() {
                                         </Button>
                                     )}
                                 </div>
-                                {state.errors?.parcels?.[index] && <p className="col-span-12 text-sm font-medium text-destructive">{JSON.stringify(state.errors.parcels[index])}</p>}
+                                {(state.errors as any)?.parcels?.[index] && <p className="col-span-12 text-sm font-medium text-destructive">{JSON.stringify((state.errors as any).parcels[index])}</p>}
                             </div>
                         ))}
                         <Button type="button" variant="outline" size="sm" onClick={addParcel}>
                             <PlusCircle className="mr-2 h-4 w-4" />
                             Add another parcel
                         </Button>
-                        {state.errors?.parcels && typeof state.errors.parcels === 'string' && <p className="text-sm font-medium text-destructive">{state.errors.parcels}</p>}
+                        {(state.errors as any)?.parcels && typeof (state.errors as any).parcels === 'string' && <p className="text-sm font-medium text-destructive">{(state.errors as any).parcels}</p>}
                     </div>
 
                      <div className="space-y-2">
@@ -224,7 +227,7 @@ export function ShipmentForm() {
                                 />
                             </PopoverContent>
                         </Popover>
-                        {state.errors?.departureDate && <p className="text-sm font-medium text-destructive">{state.errors.departureDate[0]}</p>}
+                        {(state.errors as any)?.departureDate && <p className="text-sm font-medium text-destructive">{(state.errors as any).departureDate[0]}</p>}
                     </div>
                 </CardContent>
             </Card>

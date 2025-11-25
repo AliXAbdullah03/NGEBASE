@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,8 +28,9 @@ interface BatchUpdateFormProps {
 }
 
 export function BatchUpdateForm({ batchNumber, currentStatus }: BatchUpdateFormProps) {
-    const initialState = { message: null, errors: {} };
-    const [state, dispatch] = useActionState(updateBatchStatus, initialState);
+    const initialState = { message: '', errors: {} as Record<string, string[]> };
+    // @ts-ignore - useFormState type inference issue with union return types
+    const [state, dispatch] = useFormState(updateBatchStatus, initialState);
     const { toast } = useToast();
     const formRef = useRef<HTMLFormElement>(null);
 
